@@ -14,7 +14,7 @@ class Table extends Component {
   }
 
   render() {
-    const { second, deleteRowTable } = this.props;
+    const { Array, deleteRowTable } = this.props;
     
     return (
       <>
@@ -33,7 +33,7 @@ class Table extends Component {
             defaultValue="email@domain.com"
             inline
           /> */}
-          {second.map((each, index) => {
+          {Array.map((each, index) => {
             return (
               <tr key={each.id}>
                 <th className="view">{each.id}</th>

@@ -6,98 +6,117 @@ import "./App.css";
 class App extends Component {
   constructor(props) {
     super(props);
-   this.state = {
+    this.state = {
       name: "",
       phone: "",
       email: "",
       newList: [],
       status: false,
       selectedId: "",
-      zero:0
+      zero: 0,
+      empty: {},
     };
   }
 
-  first = (methods) => {
-    const { newList,name,phone,email} = this.state; 
+  submitForm = (methods) => {
+    const { newList, name, phone, email, empty, zero } = this.state;
 
+    // this.setState((prevState) => ({
+    //   newList: [...prevState.newList, methods],
+    // }));
+    const empty1 = {};
 
-    
-    
-        // this.setState((prevState) => ({
-        //   newList: [...prevState.newList, methods],
-        // }));  
+    if (name === "") {
+      empty1.name1 = "*Name Required";
+    } else if (name.length <= 2) {
+      empty1.name1 = "*Name characters should be greater than 2";
+    }
 
+    if (phone === "") {
+      empty1.phone1 = "Phone Required";
+    } else if (phone.length < 10) {
+      empty1.phone1 = "*Phone length  be 10";
+    }
 
-        if (name!=="" && phone !=="" && email!=="" && phone.length===10){
-              newList.push(methods);
-              this.setState((prevState) => ({
-                name: "",
-                phone: "",
-                email: "",
-              }));
-        }
-    
-    
-     
+    if (email === "") {
+      empty1.email1 = "Email Required";
+    } else if (!email.includes("@")) {
+      empty1.email1 = "Email to be format";
+    }
+
+    const objectLength = Object.keys(empty1).length;
+
+    if (objectLength === 0) { 
+      this.setState({zero:zero+1})
+      methods.id=zero
+
+      newList.push(methods);
+
+      this.setState((prevState) => ({
+        name: "",
+        phone: "",
+        email: "",
+      }));
+    } else {
+      this.setState({ empty: empty1 });
+    }
   };
 
-  deleteRowTable= (index) => { 
+  deleteRowTable = (index) => {
     const { newList } = this.state;
-    const deletion=newList.filter((each)=>each.id!==index) 
-    this.setState({newList:deletion})
-  }; 
+    const deletion = newList.filter((each) => each.id !== index);
+    this.setState({ newList: deletion });
+  };
 
-
-  editTable=(index)=>{
+  editTable = (index) => {
     const { name, phone, email, newList, status } = this.state;
-        const informationFilter = newList.filter((each) => each.id === index);
-        const { Name, Phone, Email } = informationFilter[0];
-        this.setState({
-          name: Name,
-          phone: Phone,
-          email: Email,
-          status: true,
-          selectedId: index,
-        });
-  } 
+    const informationFilter = newList.filter((each) => each.id === index);
+    const { Name, Phone, Email } = informationFilter[0];
+    this.setState({
+      name: Name,
+      phone: Phone,
+      email: Email,
+      status: true,
+      selectedId: index,
+    });
+  };
 
-  updateValues=()=>{
-    const { name, phone, email, newList, status,selectedId } = this.state;
+  updateValues = () => {
+    const { name, phone, email, newList, status, selectedId } = this.state;
     //  this.setState({ Name: name, Phone: phone, Email: email,status:false})
-        const new1 = { Name: name, Phone: phone, Email: email, id: selectedId };
-        const Latest=newList.findIndex((each)=>(each.id===selectedId))
-    
-        newList.splice(Latest, 1, new1);
-        const listing = [...newList];
-         this.setState({
-           newList: listing,
-           name: "",
-          phone: "",
-           email: "",
-          status: false,
-         });
-  }
+    const new1 = { Name: name, Phone: phone, Email: email, id: selectedId };
+    const Latest = newList.findIndex((each) => each.id === selectedId);
 
+    newList.splice(Latest, 1, new1);
+    const listing = [...newList];
+    this.setState({
+      newList: listing,
+      name: "",
+      phone: "",
+      email: "",
+      status: false,
+    });
+  };
 
-  handle=(event)=>{
+  handle = (event) => {
     const { name, value } = event.target;
     this.setState({ [name]: value });
-  }
+  };
 
   render() {
-    const { newList,status } = this.state;
-   
+    const { newList, status, empty } = this.state;
+    console.log(empty)
     return (
       <div className="App">
         <Form
-          first={this.first}
-          fourth={status}
-          updateValues={this.updateValues} 
-          leo={this.state} 
+          submitForm={this.submitForm}
+          status={status}
+          updateValues={this.updateValues}
+          state={this.state}
           handle={this.handle}
         />
         <Table
-          second={newList}
+          Array={newList}
           deleteRowTable={this.deleteRowTable}
           editTable={this.editTable}
         />
@@ -174,7 +193,7 @@ export default App;
 
 //   updatingValues = () => {
 //     const { name, phone, email, newList, status, selectedId } = this.state;
-//    
+//
 
 //     const new1 = { Name: name, Phone: phone, Email: email, id: selectedId };
 //     const Latest=newList.findIndex((each)=>(each.id===selectedId))
